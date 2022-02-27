@@ -14,9 +14,31 @@ class Database:
             print(e)
         return con
 
+    def test(self):
+        print("IT worked!")
+
     def read_all(self):
         with self.connect() as con:
-            sql = f'SELECT * FROM {self.STUDENT_TBL}'
+            sql = f'''SELECT
+                id,
+                last,
+                first,
+                rfid,
+                balance
+            FROM {self.STUDENT_TBL}'''
             rows = con.execute(sql)
             return rows
         con.close()
+
+    def update_by_id(self, _id, _data):
+        with self.connect() as con:
+            sql = f'''UPDATE {self.STUDENT_TBL}
+                SET
+                    last = :last,
+                    first = :first,
+                    rfid = :rfid,
+                    balance = :balance
+                WHERE
+                    id = {_id}'''
+
+            con.execute(sql, _data)

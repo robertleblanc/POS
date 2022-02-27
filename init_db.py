@@ -24,7 +24,7 @@ CREATE_STUDENTS_TABLE_SQL = f"""CREATE TABLE IF NOT EXISTS {STUDENT_TBL} (
 
 INSERT_STUDENT_SQL = f"""INSERT INTO {STUDENT_TBL}
     (last, first, rfid, balance) VALUES
-    (?,?,?,?)"""
+    (:last,:first,:rfid,:balance)"""
 
 # Using a context manager ie. 'with' on connection will automatically commit
 # or rollback transactions. It will not close the connection
@@ -41,6 +41,7 @@ except sq.OperationalError as e:
 with open('students.csv') as students_file:
     csvreader = csv.reader(students_file)
     # take each line in csv and map it into a list of tuples
+    # each entry looks like :last,:first,:rfid,:balance
     entries = list(map(tuple, csvreader))
 
 with con:
