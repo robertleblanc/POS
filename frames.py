@@ -40,10 +40,15 @@ class TreeFrame(ttk.Labelframe):
 
         self.my_tree.bind('<<TreeviewSelect>>', self.select_record)
 
+        self.refresh_records()
         self.my_tree.pack(pady=20)
 
-    def insert_records(self, _records):
-        for row in _records:
+    def refresh_records(self):
+        for item in self.my_tree.get_children():
+            self.my_tree.delete(item)
+
+        records = self.db.read_all()
+        for row in records:
             self.my_tree.insert('', tk.END, values=row)
 
     def select_record(self, e):
@@ -105,8 +110,23 @@ class InputFrame(ttk.Labelframe):
         self.balance_entry = tk.Entry(self)
         self.balance_entry.grid(row=1, column=3, padx=10, pady=10)
 
-        self.submit = ttk.Button(self, text="Submit", command=self.submit)
+        self.add_new = ttk.Button(self, text="Add New", command=self.add_new)
+        self.add_new.grid(row=2, column=4, padx=10, pady=10)
+
+        self.submit = ttk.Button(self, text="Update", command=self.submit)
         self.submit.grid(row=2, column=5, padx=10, pady=10)
+
+    def add_new(self):
+        values = {
+            'id': self.id_entry.get(),
+            'last': self.ln_entry.get(),
+            'first': self.fn_entry.get(),
+            'rfid': self.rfid_entry.get(),
+            'balance': self.balance_entry.get()
+        }
+
+        self.db.insert_new_record(values)
+        self.connector.update("refresh")
 
     def update(self, _values):
         self.id_entry.config(state='normal')

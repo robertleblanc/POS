@@ -30,6 +30,20 @@ class Database:
             return rows
         con.close()
 
+    def insert_new_record(self, _values):
+        with self.connect() as con:
+            sql = f'''INSERT INTO
+                {self.STUDENT_TBL}
+                (last, first, rfid, balance)
+                VALUES(
+                    :last,
+                    :first,
+                    :rfid,
+                    :balance
+                )'''
+            con.execute(sql, _values)
+        con.close()
+
     def update_by_id(self, _id, _data):
         with self.connect() as con:
             sql = f'''UPDATE {self.STUDENT_TBL}
@@ -42,3 +56,4 @@ class Database:
                     id = {_id}'''
 
             con.execute(sql, _data)
+        con.close()

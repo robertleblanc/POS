@@ -6,4 +6,7 @@ class Connector():
         self.pipes[_name] = _callback
 
     def update(self, _name=None, args=None):
-        self.pipes[_name](args)
+        if args is not None:
+            self.pipes[_name](args)
+        else:
+            self.pipes[_name]()
