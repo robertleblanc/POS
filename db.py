@@ -30,6 +30,16 @@ class Database:
             return rows
         con.close()
 
+    def delete_by_id(self, _id):
+        with self.connect() as con:
+            sql = f'''
+                DELETE FROM
+                    {self.STUDENT_TBL}
+                WHERE
+                    id = ?'''
+            con.execute(sql, (_id,))
+        con.close()
+
     def insert_new_record(self, _values):
         with self.connect() as con:
             sql = f'''INSERT INTO

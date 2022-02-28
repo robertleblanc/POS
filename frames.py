@@ -111,12 +111,15 @@ class InputFrame(ttk.Labelframe):
         self.balance_entry.grid(row=1, column=3, padx=10, pady=10)
 
         self.add_new = ttk.Button(self, text="Add New", command=self.add_new)
-        self.add_new.grid(row=2, column=4, padx=10, pady=10)
+        self.add_new.grid(row=2, column=3, padx=10, pady=10)
 
         self.submit = ttk.Button(self, text="Update", command=self.submit)
-        self.submit.grid(row=2, column=5, padx=10, pady=10)
+        self.submit.grid(row=2, column=4, padx=10, pady=10)
 
-    def add_new(self):
+        self.delete = ttk.Button(self, text="Delete", command=self.delete)
+        self.delete.grid(row=2, column=5, padx=10, pady=10)
+
+    def get_values(self):
         values = {
             'id': self.id_entry.get(),
             'last': self.ln_entry.get(),
@@ -124,8 +127,15 @@ class InputFrame(ttk.Labelframe):
             'rfid': self.rfid_entry.get(),
             'balance': self.balance_entry.get()
         }
+        return values
 
-        self.db.insert_new_record(values)
+    def delete(self):
+        values = self.get_values()
+        self.db.delete_by_id(values['id'])
+        self.connector.update("refresh")
+
+    def add_new(self):
+        self.db.insert_new_record(self.get_values())
         self.connector.update("refresh")
 
     def update(self, _values):
@@ -144,14 +154,6 @@ class InputFrame(ttk.Labelframe):
         self.balance_entry.insert(0, _values[4])
 
     def submit(self):
-        id = self.id_entry.get()
-        values = {
-            'id': self.id_entry.get(),
-            'last': self.ln_entry.get(),
-            'first': self.fn_entry.get(),
-            'rfid': self.rfid_entry.get(),
-            'balance': self.balance_entry.get()
-        }
-
-        self.db.update_by_id(id, values)
+        values = self.get_values()
+        self.db.update_by_id(values['id'], values)
         self.connector.update("update_treeview", values)
