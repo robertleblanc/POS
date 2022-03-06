@@ -151,5 +151,6 @@ class InputFrame(ttk.Labelframe):
 
     def submit(self):
         values = self.get_values()
-        self.db.update_by_id(values['id'], values)
-        self.container.main_frame.refresh_records()
+        if len(values['id']) != 0:
+            self.db.update_by_id(values['id'], values)
+            self.container.main_frame.refresh_records()
