@@ -1,16 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
-from connector import Connector
-import db
 
 
 class TreeFrame(ttk.Labelframe):
-    def __init__(self, container, _connector, _db):
-        super().__init__(container)
+    def __init__(self, _container, _db):
+        super().__init__()
 
         self.db = _db
-
-        self.connector = _connector
+        self.container = _container
         options = {
             'text': "Database",
             'padding': 20
@@ -54,7 +51,7 @@ class TreeFrame(ttk.Labelframe):
     def select_record(self, e):
         selected = self.my_tree.focus()
         values = self.my_tree.item(selected, 'values')
-        self.connector.update("update_inputs", values)
+        self.container.inputs_frame.update(values)
 
     def update(self, _values):
         selected = self.my_tree.focus()
@@ -72,15 +69,14 @@ class TreeFrame(ttk.Labelframe):
 
 
 class InputFrame(ttk.Labelframe):
-    def __init__(self, container, _connector, _db):
-        super().__init__(container)
-        # self.db
+    def __init__(self, _container, _db):
+        super().__init__()
         self.options = {
             'text': "Edit Record",
             'padding': 20
         }
         self.db = _db
-        self.connector = _connector
+        self.container = _container
 
         self.id_label = tk.Label(self, text="ID:")
         self.id_label.grid(row=0, column=0, padx=10, pady=10)
@@ -132,11 +128,11 @@ class InputFrame(ttk.Labelframe):
     def delete(self):
         values = self.get_values()
         self.db.delete_by_id(values['id'])
-        self.connector.update("refresh")
+        self.container.main_frame.refresh_records()
 
     def add_new(self):
         self.db.insert_new_record(self.get_values())
-        self.connector.update("refresh")
+        self.container.main_frame.refresh_records()
 
     def update(self, _values):
         self.id_entry.config(state='normal')
@@ -156,4 +152,4 @@ class InputFrame(ttk.Labelframe):
     def submit(self):
         values = self.get_values()
         self.db.update_by_id(values['id'], values)
-        self.connector.update("update_treeview", values)
+        self.container.main_frame.refresh_records()
